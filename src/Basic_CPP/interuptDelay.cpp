@@ -11,8 +11,6 @@ void setup(){
 }
 
 void loop(){
-
-
     //  จะทำในเงื่อนไขทุกๆ 5 วินาที
     if(millis() - timeCounter > 5000) {
         Serial.println("Now 5 second pass");
