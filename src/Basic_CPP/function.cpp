@@ -1,9 +1,9 @@
 #include <Arduino.h>
 
-// ประกาศตัวแปร counter เป็นจำนวนเต็ม และให้ค่าเท่ากับ 0
+// Declare an integer variable counter and set it to 0
 int counter = 0;
 
-// ประกาศฟังก์ชั่น เพื่อย่อสิ่งทีี่ต้องทำซ้ำๆให้สั้นลง
+// Declare a function to shorten repetitive tasks
 void printValue(){
     Serial.println("counter is now: " + String(counter));    
     delay(1000);
@@ -15,18 +15,19 @@ void setup(){
 
 void loop(){
 
-    // ให้ counter เท่ากับ 0
+    // Set counter to 0
     counter = 0;
 
-    // หากเงื่อนไขใน while เป็นจริงจะเข้าไปทำในวงเล็บเรื่อยๆจนกว่าจะเป็นเท็จ
+    /* If the condition in while is true, execute the block 
+       repeatedly until it becomes false */
     while(counter < 10){
 
-        // เรีัยกใช้ฟังก์ชั่น
+        // Call the function
         printValue();
-        // บวก 1 เข้าไปในตัวแปร counter
+        // Add 1 to the variable counter
         counter++;
     }
-
 }
 
-// การประกาศฟังก์ชั่นต้องประกาศก่อนที่จะเรียกใช้ฟังก์ชั่นเท่านั้น มิฉะนั้นจะ build fail
+/* Functions must be declared before they are called; otherwise, 
+   build will fail */

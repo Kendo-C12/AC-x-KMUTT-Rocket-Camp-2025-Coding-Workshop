@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-// ประกาศตัวแปร counter เป็นจำนวนเต็ม และให้ค่าเท่ากับ 0
+// Declare an integer variable counter and set it to 0
 int counter = 0;
 
 
@@ -10,7 +10,9 @@ void setup(){
 
 void loop(){
 
-    // ถ้าใน if เป็นจริงจะเข้าทำในวงเล็บของ if statement นั้นๆ แต่ถ้าไม่จะไปเช็คต่อที่ else if statement หากไม่มีหรือเป็นเท็จหมดจะเข้าไปทำในวงเล็บ else statement
+    /* If the condition in the if statement is true, execute its block.
+       Otherwise, check the else if statements if any.
+       If none are true or present, execute the else block. */
     if(counter%2 == 1){
         Serial.println("Now counter is odd");
     }
@@ -18,6 +20,7 @@ void loop(){
         Serial.println("Now counter is even");
     }
 
-    // บวก 1 เข้าไปในตัวแปร counter
+    // Add 1 to the variable counter
     counter++;
+    delay(1000);
 }

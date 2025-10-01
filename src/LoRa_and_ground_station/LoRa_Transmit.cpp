@@ -2,31 +2,27 @@
 
 #include <RadioLib.h>
 #include <SPI.h>
+#include "orbit_pin_def.h"
+#include <EEPROM.h>
 
-#define LORA_MOSI PA7
-#define LORA_MISO PA6
-#define LORA_SCLK PA5
+// SPI
+SPIClass spi1(PIN_SPI_MOSI1, PIN_SPI_MISO1, PIN_SPI_SCK1);
 
-SPIClass spi1(LORA_MOSI,LORA_MISO,LORA_SCLK);  // Using hardware SPI (MISO,MOSI,SCLK)
+SPISettings lora_spi_settings(4'000'000, MSBFIRST, SPI_MODE0);
 
-SPISettings lora_spi_settings(8000000, MSBFIRST, SPI_MODE0); // 8 MHz for Mega2560
-
-constexpr struct {
-    float center_freq = 915.000000f;  // MHz
-    float bandwidth   = 125.f;     // kHz
-    uint8_t spreading_factor = 9;  
-    uint8_t coding_rate = 8;       
-    uint8_t sync_word = 0x12;      
-    int8_t power = -9;             
+constexpr struct
+{
+    float center_freq = 925.00'000f; // MHz
+    float bandwidth = 125.f;         // kHz
+    uint8_t spreading_factor = 9;    // SF: 6 to 12
+    uint8_t coding_rate = 8;         // CR: 5 to 8
+    uint8_t sync_word = 0x12;        // Private SX1262
+    int8_t power = 22;               // up to 22 dBm for SX1262
     uint16_t preamble_length = 16;
 } lora_params;
 
-#define LORA_NSS   PA4
-#define LORA_DIO1  PB8
-#define LORA_NRST  PB7
-#define LORA_BUSY  PB6
-
 SX1262 lora = new Module(LORA_NSS, LORA_DIO1, LORA_NRST, LORA_BUSY, spi1, lora_spi_settings);
+
 
 void loraSetup(){
   
@@ -39,7 +35,9 @@ void loraSetup(){
     lora_params.coding_rate,
     lora_params.sync_word,
     lora_params.power,
-    lora_params.preamble_length
+    lora_params.preamble_length,
+    0,
+    0
   );
 
   if(lora_state != RADIOLIB_ERR_NONE) {
@@ -78,7 +76,6 @@ void loraSetup(){
   }
 }
 
-
 /* ================================================================================================== */
 
 // Lora State
@@ -110,14 +107,11 @@ unsigned long last_time;
 unsigned long last_time_line;
 
 void setFlag(void) {
-  rx_flag = true;
+  tx_flag = true;
 }
 
 void setup() {
   delay(5000);
-
-  last_ack = 0;
-  last_nack = 0;
 
   Serial.begin(115200);
   spi1.begin(); // initialize SPI bus
@@ -126,52 +120,24 @@ void setup() {
 
   loraSetup();
 
+  lora.setPacketSentAction(setFlag);
   
-  //lora.setDio1Action(setFlag);
-
-  t = 0;
-  randomSeed(analogRead(A0));
-
   last_time = millis();
   last_time_line = millis();
+  tx_flag = true;
 }
 
 void loop() {
-  if(millis() - last_time_line > 2000){
-    line = String(t);
-
-    // line += "<3>";
-    // line += ",";
-    // line += String(t);
-    // line += ",";
-    // line += stateR;
-    // line += ",";
-    // line += String(random(50, 150)); // lat
-    // line += ",";
-    // line += String(random(50, 150)); // lon
-    // line += ",";
-    // line += String(random(50, 150)); // alt
-    // line += ",";
-    // line += String(random(50, 150)); // apogee
-    // line += ",";
-    // line += String(random(50, 150)); // volMon
-    // line += ",";
-    // line += String(last_ack);
-    // line += ",";
-    // line += String(last_nack);
-
-    last_time_line = millis();
-  }
-
-
   if(millis() - last_time > 2000){
-
     lora_state = LoRaState::TRANSMITTING;
-    lora.startTransmit(line);
-    lora_tx_end_time = millis() + 10 + (lora.getTimeOnAir(line.length())) / 1000;
+    lora.startTransmit("Helle World");
     Serial.println("[TRANSMITTING...]"); 
     ++t;
-
     last_time = millis();
+  }
+
+  if(tx_flag){
+    Serial.println("TRANSMITTING FINISH"); 
+    tx_flag = false;
   }
 }

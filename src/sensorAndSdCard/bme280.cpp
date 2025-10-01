@@ -1,6 +1,6 @@
 #include <Arduino.h>
+#include "orbit_pin_def.h"
 #include <Wire.h>
-#include <SPI.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 
@@ -11,21 +11,24 @@
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
+TwoWire i2c1(PIN_SDA, PIN_SCL);
+
 Adafruit_BME280 bme; // I2C
-//Adafruit_BME280 bme(BME_CS); // hardware SPI
-//Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK); // software SPI
 
 unsigned long delayTime;
 
 void printValues();
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
     Serial.println(F("BME280 test"));
+    i2c1.begin();
 
-    if (! bme.begin(0x77, &Wire)) {
-        Serial.println("Could not find a valid BME280 sensor, check wiring!");
-        while (1);
+    if (! bme.begin(0x76, &i2c1)) {
+        while (1){
+            Serial.println("Could not find a valid BME280 sensor, check wiring!");
+            delay(1000);
+        }
     }
 
     Serial.println("-- Default Test --");
@@ -37,10 +40,7 @@ void setup() {
 }
 
 
-void loop() {
-    // Only needed in forced mode! In normal mode, you can remove the next line.
-    bme.takeForcedMeasurement(); // has no effect in normal mode
-    
+void loop() {    
     printValues();
     delay(delayTime);
 }

@@ -1,17 +1,20 @@
 #include <Arduino.h>
 
-// ประกาศตัวแปร timeCounter เป็นจำนวนเต็มบวก 32 bit 
+// Declare a 32-bit unsigned integer variable timeCounter
 uint32_t timeCounter;
 
 void setup(){
     Serial.begin(115200);
 
-    // ให้ timeCounter เท่ากับเวลา ณ ตอนนี้ โดย  millis() คือนาฬิกาจับเวลาของบอร์ด Arduino นับเป็นมิลลิวินาที เริ่มนับใหม่เมื่อจ่ายไฟหรือ reset และจะเกิดการ Overflow และกลับไป 0 ใหม่เมื่อผ่านไป 49.7 วัน
+    /* Set timeCounter to the current time. millis() is the 
+       Arduino board'stimer in milliseconds. It resets when 
+       the board is powered on or reset, and will overflow 
+       back to 0 after approximately 49.7 days. */
     timeCounter = millis();
 }
 
 void loop(){
-    //  จะทำในเงื่อนไขทุกๆ 5 วินาที
+    // Execute this block every 5 seconds
     if(millis() - timeCounter > 5000) {
         Serial.println("Now 5 second pass");
         timeCounter = millis();
@@ -21,5 +24,8 @@ void loop(){
     delay(1000);
 }
 
-// ที่ timeCounter ต้องเป็น uint32_t เพราะฟังก์ชั่น millis() return ตัวแปรชนิด uint32_t ออกมา หากใช้ตัวแปรชนิดอื่นที่รับได้น้อยกว่านี้อาจเกินการ Overflow ได้
-// delay จะไม่หยุดการทำงานของโปรแกรมหลักอย่างเดี่ยว แต่การนับของ millis() จะไม่ถูกขัดขวางโดย กำสฟั
+/* timeCounter must be uint32_t because the millis() function
+   returns a uint32_t. Using a smaller data type may cause overflow.
+
+   delay does not pause the main program execution, 
+   and the counting of millis() is not interrupted by delay. */

@@ -1,30 +1,51 @@
 #include <Arduino.h>
 
-// ประกาศตัวแปร all เป็น struct และใมีสมาชิก counter1 และ counter2 และฟังก์ชั่น sum
-struct{
+/*
+   Example: Using a struct in Arduino
 
+   - We create an anonymous struct named "all" with two integer members:
+       counter1 and counter2
+   - The struct also contains three functions:
+       sum()        → adds counter1 + counter2
+       difference() → subtracts counter1 - counter2
+       product()    → multiplies counter1 * counter2
+   - In loop(), we keep updating the counters and printing results
+   - This demonstrates how a struct can hold both data and functions
+*/
+
+struct {
     int counter1 = 0;
     int counter2 = 0;
 
-    int sum(){
+    int sum() {
         return counter1 + counter2;
     }
-}all;
 
+    int difference() {
+        return counter1 - counter2;
+    }
 
-void setup(){
+    int product() {
+        return counter1 * counter2;
+    }
+} all;
 
+void setup() {
     Serial.begin(115200);
-
-    // ให้ค่าตัวแปร counter1 ของ struct all เท่ากับ 2
-    all.counter1 = 2;
-
-    // ให้ค่าตัวแปร counter2 ของ struct all เท่ากับ 5
-    all.counter1 = 5;
-
-    // เรียกใช้ฟังก์ชั่นรวมผลกรมของ counter1 และ counter2 ของ struct all
-    Serial.println("sum: " + all.sum());
 }
 
-void loop(){
+void loop() {
+    // Update counters
+    all.counter1++;
+    all.counter2 += 2;
+
+    // Print struct values and results of functions
+    Serial.println("counter1: " + String(all.counter1));
+    Serial.println("counter2: " + String(all.counter2));
+    Serial.println("sum: " + String(all.sum()));
+    Serial.println("difference: " + String(all.difference()));
+    Serial.println("product: " + String(all.product()));
+    Serial.println("---------------------");
+
+    delay(1000); // wait 1 second before next update
 }

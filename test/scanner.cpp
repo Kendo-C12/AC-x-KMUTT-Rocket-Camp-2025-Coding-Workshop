@@ -28,13 +28,14 @@
 //
  
 #include <Wire.h>
+#include "orbit_pin_def.h"
+
+void setup() 
+{	
+  Wire.begin(PIN_SDA, PIN_SCL);
  
- 
-void setup()
-{
-  Wire.begin();
- 
-  Serial.begin(9600);
+  Serial.begin(115200);
+  
   while (!Serial);             // Leonardo: wait for serial monitor
   Serial.println("\nI2C Scanner");
 }

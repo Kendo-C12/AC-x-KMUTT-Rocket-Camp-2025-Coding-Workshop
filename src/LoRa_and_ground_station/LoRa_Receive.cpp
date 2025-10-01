@@ -2,32 +2,27 @@
 
 #include <RadioLib.h>
 #include <SPI.h>
+#include "orbit_pin_def.h"
 #include <EEPROM.h>
 
-#define LORA_MOSI PA7
-#define LORA_MISO PA6
-#define LORA_SCLK PA5
+// SPI
+SPIClass spi1(PIN_SPI_MOSI1, PIN_SPI_MISO1, PIN_SPI_SCK1);
 
-SPIClass spi1(LORA_MOSI,LORA_MISO,LORA_SCLK);  // Using hardware SPI (MISO,MOSI,SCLK)
+SPISettings lora_spi_settings(4'000'000, MSBFIRST, SPI_MODE0);
 
-SPISettings lora_spi_settings(8000000, MSBFIRST, SPI_MODE0); // 8 MHz for Mega2560
-
-constexpr struct {
-    float center_freq = 915.000000f;  // MHz
-    float bandwidth   = 125.f;     // kHz
-    uint8_t spreading_factor = 9;  
-    uint8_t coding_rate = 8;       
-    uint8_t sync_word = 0x12;      
-    int8_t power = 22;             
+constexpr struct
+{
+    float center_freq = 925.00'000f; // MHz
+    float bandwidth = 125.f;         // kHz
+    uint8_t spreading_factor = 9;    // SF: 6 to 12
+    uint8_t coding_rate = 8;         // CR: 5 to 8
+    uint8_t sync_word = 0x12;        // Private SX1262
+    int8_t power = 22;               // up to 22 dBm for SX1262
     uint16_t preamble_length = 16;
 } lora_params;
 
-#define LORA_NSS   PA4
-#define LORA_DIO1  PB8
-#define LORA_NRST  PB7
-#define LORA_BUSY  PB6
-
 SX1262 lora = new Module(LORA_NSS, LORA_DIO1, LORA_NRST, LORA_BUSY, spi1, lora_spi_settings);
+
 
 void loraSetup(){
   
@@ -40,7 +35,9 @@ void loraSetup(){
     lora_params.coding_rate,
     lora_params.sync_word,
     lora_params.power,
-    lora_params.preamble_length
+    lora_params.preamble_length,
+    0,
+    0
   );
 
   if(lora_state != RADIOLIB_ERR_NONE) {
@@ -78,7 +75,6 @@ void loraSetup(){
     while (true) { delay(10); }
   }
 }
-
 /* ================================================================================================== */
 // LoRa State
 enum class LoRaState
@@ -137,7 +133,6 @@ void setup()
   loraSetup();
 
   Serial.print("success");
-
 
   lora.setPacketReceivedAction(setFlag);
 

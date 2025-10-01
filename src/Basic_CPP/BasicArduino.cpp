@@ -1,21 +1,21 @@
 #include <Arduino.h>
 
-// ทำครั้งเดี่ยวหลังจากเริ่ม run โปรแกรม
+// Run once after the program starts
 void setup(){
 
-    // ประกาศใช้ Serial port ที่ baudrate 1152000
+    // Initialize Serial port with baudrate 115200
     Serial.begin(115200);
 
-    // Print "Hello World" โดยที่จะเข้าดึงได้โดยใช้ serial monitor
+    // Print "Hello World" which can be viewed via serial monitor
     Serial.print("Hello World");
 }
 
-// ทำซ้ำไปเรื่อยๆ ไม่มีวันสิ้นสุด
+// Repeat continuously forever
 void loop(){
 
-    // Print "This is blank line" แล้วเว้นบรรทัดอัตโนมัติ
+    // Print "This is blank line" and move to a new line automatically
     Serial.println("This is blank line");
 
-    // การขัดจังหวะโปรแกรมทั้งหมดเป็นเวลา 100 มิลลิวินาที
+    // Pause the entire program for 100 milliseconds
     delay(100);
 }
