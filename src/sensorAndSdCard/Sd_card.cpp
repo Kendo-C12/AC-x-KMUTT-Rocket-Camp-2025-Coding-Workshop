@@ -29,7 +29,7 @@ void setup(){
 
   spi1.begin();
   
-  if(sd_util.sd().begin(sd_config);){
+  if(sd_util.sd().begin(sd_config)){
     init_storage(sd_util);
     Serial.println("SD SUCESS");
     digitalWrite(ledPin1, 1);

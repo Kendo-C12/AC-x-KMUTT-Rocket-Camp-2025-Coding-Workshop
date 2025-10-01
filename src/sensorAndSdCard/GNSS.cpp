@@ -20,7 +20,8 @@ void setup() {
 }
 
 
-void loop() {    
+void loop() {   
+    Serial.println("Read GNSS"); 
     printValues();
     delay(delayTime);
 }

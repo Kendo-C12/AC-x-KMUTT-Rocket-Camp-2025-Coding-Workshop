@@ -12,6 +12,8 @@ String text = "Hi";
 // Declare a boolean variable yesNo and set it to false
 bool yesNo = false;
 
+#define INT_MAX MAX
+
 
 void setup(){
 
